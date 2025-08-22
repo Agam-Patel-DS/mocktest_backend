@@ -1,6 +1,5 @@
-from dataclasses import dataclass
 from src.utils import readData
-from src.modules.testReply.testReplyConfigs import testByDifficultyConfig
+from src.entity.testReplyConfigs import testByDifficultyConfig
 
 class testByDifficultyGeneration:
     def __init__(self,data:testByDifficultyConfig):
@@ -19,13 +18,7 @@ class testByDifficultyGeneration:
 
         filteredDf=df[df['difficulty'].isin(difficultyLevel) & df['dataStructure'].isin(dataStructure)]
 
-        #filteredDf=filteredDf.head(numberOfQuestions)
-
         sampleDf=filteredDf.sample(n=min(numberOfQuestions, len(filteredDf)), random_state=seed)
-
-        # questionsForFrontend=dict(zip(filteredDf["id"], filteredDf["question"]))
-        # questionsForDatabase=dict(zip(index, questionsForFrontend.keys()))
-
         questionsForFrontend=dict(zip(sampleDf["id"], sampleDf["question"]))
         questionsForDatabase=dict(zip(index, questionsForFrontend.keys()))
 

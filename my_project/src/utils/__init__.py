@@ -7,13 +7,31 @@ def readData(datapath:str):
 
 
 def returnDemoDataByDifficulty():
-    data={"userId":"agampatel@gmail.com",
+    data={
+       "userId":"agampatel@gmail.com",
         "testType":"testByDifficulty",
-        "params":{"difficultyLevel":["easy", "medium"],
+        "params":{
+                  "difficultyLevel":["easy", "medium"],
                   "dataStructure":["array", "string"],
                   "timeLimit":"None",
-                  "company":[],
                   "numberOfQuestions":8,
+                  "seed":48
+                  }
+    }
+    return data
+
+
+def returnDemoDataByCompanies():
+    data={
+       "userId":"agampatel@gmail.com",
+        "testId":12345242,
+        "testType":"testByCompanies",
+        "params":{
+                  "difficultyLevel":["easy", "medium"],
+                  "companies":["Flipkart", "Amazon"],
+                  "timeLimit":"None",
+                  "numberOfQuestions":8,
+                  "seed":48
                   }
     }
     return data
