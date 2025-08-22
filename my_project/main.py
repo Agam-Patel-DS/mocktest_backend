@@ -1,13 +1,12 @@
 
 
 
-from src.replies.testReplyFinal import testByCompaniesReplyFinal
-from src.utils import returnDemoDataByCompanies
-from src.utils.customLogger import logger
 
-logger.info("Logger Initialised")
+from src.utils.customLogger import logger
+from src.utils import returnDemoDataByCompanies
+from src.replies.testReplyFinal import testByCompaniesReplyFinal
+
 data=returnDemoDataByCompanies()
-logger.info(f"Request Data From User: {data}")
-reply=testByCompaniesReplyFinal(data)
-logger.info(f"Code Complete")
-print(reply)
+
+one,two=testByCompaniesReplyFinal(data)
+print(two)

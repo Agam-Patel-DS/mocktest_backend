@@ -8,6 +8,9 @@ class testByCompaniesGeneration:
         self.data=data
 
     def generateTest(self):
+        if self.data==None:
+            return None, None
+
         numberOfQuestions=self.data.numberOfQuestions
         difficultyLevel=self.data.difficultyLevel
         companies=self.data.companies

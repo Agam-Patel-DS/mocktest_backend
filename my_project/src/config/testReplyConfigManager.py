@@ -1,4 +1,4 @@
-from src.entity.testReplyConfigs import testByDifficultyConfig, testByCompaniesConfig, testByGenAIConfig
+from src.entity.testReplyConfigs import testByDifficultyConfig, testByCompaniesConfig, testByGenAIConfig, databaseTestDetailsConfig, databaseTestInitConfig, databaseQuestionDetailsConfig
 
 class testReplyConfigurationManager:
     def __init__(self,data:dict):
@@ -30,3 +30,31 @@ class testReplyConfigurationManager:
             numberOfQuestions=self.data["params"]["companies"],
             dataStructure=self.data["params"]["dataStructure"]
         )
+
+    def databaseTestInitManager(self):
+        config=databaseTestInitConfig(
+            userId=self.data["userId"],
+            testId=self.data["testId"],
+            testType=self.data["testType"]
+        )
+        return config
+    
+    def databaseTestDetailsManager(self):
+        config=databaseTestDetailsConfig(
+            userId=self.data["userId"],
+            testId=self.data["testId"],
+            numberOfQuestions=self.data["params"]["numberOfQuestions"],
+            companies=self.data["params"]["companies"],
+            dataStructures=self.data["params"]["dataStructures"],
+            difficultyLevel=self.data["params"]["difficultyLevel"],
+            timeLimit=self.data["params"]["timeLimit"],
+        )
+        return config
+    
+    def dataQuestionsDetailsManager(self):
+        config=databaseQuestionDetailsConfig(
+            userId=self.data["userId"],
+            testId=self.data["testId"],
+            questionIds=self.data["questionIds"],
+        )
+        return config

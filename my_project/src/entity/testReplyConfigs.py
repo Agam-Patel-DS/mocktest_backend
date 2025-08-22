@@ -21,3 +21,25 @@ class testByGenAIConfig:
     numberOfQuestions: int
     difficultyLevel: int
     dataStructure: list
+
+@dataclass
+class databaseTestInitConfig:
+    userId:str
+    testId:str
+    testType:str
+
+@dataclass
+class databaseTestDetailsConfig:
+    userId:str
+    testId:str
+    numberOfQuestions:int
+    companies:list
+    dataStructures:list
+    difficultyLevel:list
+    timeLimit:int
+
+@dataclass
+class databaseQuestionDetailsConfig:
+    userId:str
+    testId:set
+    questionIds:dict
