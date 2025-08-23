@@ -1,14 +1,6 @@
 import pandas as pd
+from datetime import datetime
 
-target="db"
-
-filesAndColumns = {
-   "testUserDetails.xlsx":["userId","testId","testType"],
-   "testDetails.xlsx":["userId","testId","numberOfQuestions","difficultyLevel","companies","dataStructure","timeLimit"],
-   "questionDetails.xlsx":["userId","testId","questionIds"],
-   "solutionDetails.xlsx":["userId","testId","solutions","timeTaken"],
-   "scoreDetails.xlsx":["userId","testId","result","score"]
-}   
 
 def readData(datapath:str):
 
@@ -32,18 +24,20 @@ def loadConfig(config):
     
   return dictToNamespace(data)
       
-
+ts=datetime.now()
 
 def returnDemoDataByDifficulty():
     data={
        "userId":"agampatel@gmail.com",
         "testType":"testByDifficulty",
+        "timeStamp": ts.strftime("%Y-%m-%d %H:%M:%S"),
         "params":{
                   "difficultyLevel":["easy", "medium"],
                   "dataStructure":["array", "string"],
+                  "companies":[],
                   "timeLimit":"None",
                   "numberOfQuestions":8,
-                  "seed":48
+                  "seed":48,
                   }
     }
     return data
@@ -54,12 +48,14 @@ def returnDemoDataByCompanies():
        "userId":"agampatel@gmail.com",
         "testId":12356442,
         "testType":"testByCompanies",
+        "timeStamp": ts.strftime("%Y-%m-%d %H:%M:%S"),
         "params":{
                   "difficultyLevel":["easy", "medium"],
+                  "dataStructure":[],
                   "companies":["Flipkart", "Amazon"],
                   "timeLimit":"None",
                   "numberOfQuestions":8,
-                  "seed":48
+                  "seed":48,
                   }
     }
     return data

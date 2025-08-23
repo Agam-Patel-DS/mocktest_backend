@@ -27,6 +27,7 @@ class databaseTestInitConfig:
     userId:str
     testId:str
     testType:str
+    timeStamp:str
 
 @dataclass
 class databaseTestDetailsConfig:

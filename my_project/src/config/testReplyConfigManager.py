@@ -35,7 +35,8 @@ class testReplyConfigurationManager:
         config=databaseTestInitConfig(
             userId=self.data["userId"],
             testId=self.data["testId"],
-            testType=self.data["testType"]
+            testType=self.data["testType"],
+            timeStamp=self.data["timeStamp"]
         )
         return config
     
@@ -45,7 +46,7 @@ class testReplyConfigurationManager:
             testId=self.data["testId"],
             numberOfQuestions=self.data["params"]["numberOfQuestions"],
             companies=self.data["params"]["companies"],
-            dataStructures=self.data["params"]["dataStructures"],
+            dataStructures=self.data["params"]["dataStructure"],
             difficultyLevel=self.data["params"]["difficultyLevel"],
             timeLimit=self.data["params"]["timeLimit"],
         )
