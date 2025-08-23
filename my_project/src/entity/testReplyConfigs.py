@@ -37,7 +37,7 @@ class databaseTestDetailsConfig:
     companies:list
     dataStructures:list
     difficultyLevel:list
-    timeLimit:int
+    timeLimit:str
 
 @dataclass
 class databaseQuestionDetailsConfig:
