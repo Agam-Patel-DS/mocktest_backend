@@ -20,13 +20,47 @@ llm = ChatGroq(
 )
 
 # Strict JSON-only prompt
-prompt = ChatPromptTemplate.from_template("""
-You are a DSA coding question generator.
+# prompt = ChatPromptTemplate.from_template("""
+# You are a DSA coding question generator.
 
-Generate **EXACTLY {num_questions}** questions on the topics: {topics}.
+# Generate **EXACTLY {num_questions}** questions on the topics: {topics}.
+# Each must be assigned one of these difficulties: {difficulties}.
+# ⚠️ Every requested difficulty level MUST appear at least once.
+# ⚠️ Generate no more and no less than {num_questions} questions.
+
+# Return the result as VALID JSON ONLY, with this exact structure:
+
+# {{
+#   "1": {{
+#     "question": "problem_statement",
+#     "difficultyLevel": "difficultyLevelofthequestion",
+#     "examples": {{
+#       "1": {{
+#         "input": "some_input",
+#         "output": "some_output",
+#         "explanation": "some_explanation"
+#       }}
+#     }},
+#     "constraints": {{
+#       "1": "someConstraint",
+#       "2": "someConstraint"
+#     }}
+#   }},
+#   "2": ...
+# }}
+
+# Do not include explanations, notes, or extra text outside JSON.
+# """)
+
+prompt = ChatPromptTemplate.from_template("""You are a DSA coding question generator.
+
+Generate EXACTLY {num_questions} questions on the topics: {topics}.
 Each must be assigned one of these difficulties: {difficulties}.
+
 ⚠️ Every requested difficulty level MUST appear at least once.
 ⚠️ Generate no more and no less than {num_questions} questions.
+⚠️ No two questions should be the same — they must be mutually exclusive in the data structure or algorithm they focus on.
+⚠️ Question statements must be longer, descriptive, and real-world inspired, avoiding overly short or generic prompts.
 
 Return the result as VALID JSON ONLY, with this exact structure:
 
@@ -48,9 +82,8 @@ Return the result as VALID JSON ONLY, with this exact structure:
   }},
   "2": ...
 }}
-
-Do not include explanations, notes, or extra text outside JSON.
-""")
+"""
+)
 
 def safe_json_parse(text: str):
     """Strict JSON extraction & parsing with cleanup."""

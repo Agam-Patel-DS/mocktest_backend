@@ -2,21 +2,22 @@ from src.entity.testReplyConfigs import testByDifficultyConfig, testByCompaniesC
 from src.utils.customException import handle_exceptions
 from src.utils.customLogger import logger
 from pathlib import Path
-
+import os
 
 class testReplyConfigurationManager:
     def __init__(self,data:dict):
         
         # This class returns all the configurations required for testReply Module
 
-        logger.info(f"{Path(__file__).name}: running testReplyConfigurationManager")
+        
 
         self.data=data
+        logger.info(f"{os.path.abspath(__file__)}: running testReplyConfigurationManager")
 
     # Configuration for testByDifficulty
     def testByDifficultyConfiguration(self):
 
-        logger.info(f"{Path(__file__).name}: making testByDufficultyConfiguration")
+        logger.info(f"{os.path.abspath(__file__)}: making testByDufficultyConfiguration")
 
         config=testByDifficultyConfig(
             dataStructure=self.data["params"]["dataStructure"],
@@ -30,7 +31,7 @@ class testReplyConfigurationManager:
     # Configuration for testByCompanies
     def testByCompaniesConfiguration(self):
 
-        logger.info(f"{Path(__file__).name}: making testByCompaniesConfiguration")
+        logger.info(f"{os.path.abspath(__file__)}: making testByCompaniesConfiguration")
 
         config=testByCompaniesConfig(
             difficultyLevel=self.data["params"]["difficultyLevel"],
@@ -44,18 +45,19 @@ class testReplyConfigurationManager:
     # Configuration for testByGenAI
     def testByGenAIConfiguration(self):
 
-        logger.info(f"{Path(__file__).name}: making testByGenAIConfiguration")
+        logger.info(f"{os.path.abspath(__file__)}: making testByGenAIConfiguration")
 
         config=testByGenAIConfig(
             difficultyLevel=self.data["params"]["difficultyLevel"],
-            numberOfQuestions=self.data["params"]["companies"],
+            numberOfQuestions=self.data["params"]["numberOfQuestions"],
             dataStructure=self.data["params"]["dataStructure"]
         )
+        return config
 
     # Configuration for databaseTestInit
     def databaseTestInitManager(self):
 
-        logger.info(f"{Path(__file__).name}: making databaseTestInitManager Configuration")
+        logger.info(f"{os.path.abspath(__file__)}: making databaseTestInitManager Configuration")
 
         config=databaseTestInitConfig(
             userId=self.data["userId"],
@@ -68,7 +70,7 @@ class testReplyConfigurationManager:
     # Configuration for databaseTestDetails
     def databaseTestDetailsManager(self):
 
-        logger.info(f"{Path(__file__).name}: making databaseTestDetailsManager Configguration")
+        logger.info(f"{os.path.abspath(__file__)}: making databaseTestDetailsManager Configguration")
 
         config=databaseTestDetailsConfig(
             userId=self.data["userId"],
@@ -84,7 +86,7 @@ class testReplyConfigurationManager:
     # Configuration for databaseQuestionDetails
     def dataQuestionsDetailsManager(self):
 
-        logger.info(f"{Path(__file__).name}: making dataQuestionsDetailsManager Configuration")
+        logger.info(f"{os.path.abspath(__file__)}: making dataQuestionsDetailsManager Configuration")
 
         config=databaseQuestionDetailsConfig(
             userId=self.data["userId"],

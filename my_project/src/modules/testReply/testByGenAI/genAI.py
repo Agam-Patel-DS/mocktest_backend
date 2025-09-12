@@ -2,7 +2,7 @@ from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
 import json
 from dotenv import load_dotenv
-
+import os
 load_dotenv()
 
 groq_api_key = os.getenv("GROQ_API_KEY")

@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
-from src.replies.testReplyFinal import testByCompaniesReplyFinal,testByDifficultyReplyFinal
+from src.replies.testReplyFinal import testByCompaniesReplyFinal,testByDifficultyReplyFinal, testByGenAIReplyFinal
 from src.utils.customException import handle_exceptions
 from src.utils.customLogger import logger
 from pathlib import Path
-
+import os
 
 app=Flask(__name__)
 
@@ -12,15 +12,15 @@ app=Flask(__name__)
 def get_questions_dsa():
     data=request.get_json()
 
-    logger.info(f"{Path(__file__).name}: new request at /get_questions_dsa")
+    logger.info(f"{os.path.abspath(__file__)}: new request at /get_questions_dsa")
 
     if not data:
-        logger.info(f"{Path(__file__).name}: No data recieved")
+        logger.info(f"{os.path.abspath(__file__)}: No data recieved")
         return jsonify({"error":"No JSON data recieved"}), 400
     
     questionsDict,dbDict=testByDifficultyReplyFinal(data)
-
-    logger.info(f"{Path(__file__).name}: response sent to frontend")
+    
+    logger.info(f"{os.path.abspath(__file__)}: response sent to frontend")
 
     return jsonify({
         "questionsDict":questionsDict,
@@ -32,20 +32,38 @@ def get_questions_dsa():
 def get_questions_companies():
     data=request.get_json()
 
-    logger.info(f"{Path(__file__).name}: new request at /get_questions_companies")
+    logger.info(f"{os.path.abspath(__file__)}: new request at /get_questions_companies")
 
     if not data:
         return jsonify({"error":"No JSON data recieved"}), 400
     
     questionsDict,dbDict=testByCompaniesReplyFinal(data)
 
-    logger.info(f"{Path(__file__).name}: response sent to frontend")
+    logger.info(f"{os.path.abspath(__file__)}: response sent to frontend")
 
     return jsonify({
         "questionsDict":questionsDict,
         "dbDict":dbDict
     })
 
+@app.route("/get_questions_genai",methods=["POST"])
+def get_questions_genai():
+    data=request.get_json()
+
+    logger.info(f"{os.path.abspath(__file__)}: new request at /get_questions_genai")
+
+    if not data:
+        return jsonify({"error":"No JSON data recieved"}), 400
+    
+    print(f"Calling testByGenAIReplyFinal function from {os.path.abspath(__file__)}")
+    questionsDict,dbDict=testByGenAIReplyFinal(data)
+
+    logger.info(f"{os.path.abspath(__file__)}: response sent to frontend")
+
+    return jsonify({
+        "questionsDict":questionsDict,
+        "dbDict":dbDict
+    })
 
 if __name__=="__main__":
     app.run(debug=True)

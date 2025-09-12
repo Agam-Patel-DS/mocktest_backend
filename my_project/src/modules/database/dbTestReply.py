@@ -6,6 +6,7 @@ import os
 from src.utils.customLogger import logger
 from src.utils.customException import handle_exceptions
 from pathlib import Path
+import os
 
 class databaseInitTestReplyHandler:
     def __init__(self,config:databaseTestInitConfig):
@@ -15,7 +16,7 @@ class databaseInitTestReplyHandler:
         self.config=config
         self.fileConfig=loadConfig("config/dbconfig.yaml")
 
-        logger.info(f"{Path(__file__).name}: Ensuring DB exists...")
+        logger.info(f"{os.path.abspath(__file__)}: Ensuring DB exists...")
 
         ensureDbFiles(self.fileConfig.target,vars(self.fileConfig.filesAndColumns))
 
@@ -40,11 +41,11 @@ class databaseInitTestReplyHandler:
 
                 if((df["userId"]==newUser)&(df["testId"]==newTest)).any():
 
-                    logger.info(f"{Path(__file__).name}: Duplicate entry to {values[0]} having testId {values[1]} found. Not Registered.")
+                    logger.info(f"{os.path.abspath(__file__)}: Duplicate entry to {values[0]} having testId {values[1]} found. Not Registered.")
 
                     return False
             
-            logger.info(f"{Path(__file__).name}: no duplicate found for {values[0]} having testId {values[1]}")
+            logger.info(f"{os.path.abspath(__file__)}: no duplicate found for {values[0]} having testId {values[1]}")
 
             df=pd.concat([df,newRow],ignore_index=True)
 
@@ -53,7 +54,7 @@ class databaseInitTestReplyHandler:
 
         df.to_excel(filePath,index=False)
 
-        logger.info(f"{Path(__file__).name}: User-Test Details {values} Added to table {filePath}")
+        logger.info(f"{os.path.abspath(__file__)}: User-Test Details {values} Added to table {filePath}")
         return True
 
 class databaseTestDetailsTestReplyHandler:
@@ -64,7 +65,7 @@ class databaseTestDetailsTestReplyHandler:
         self.config=config
         self.fileConfig=loadConfig("config/dbconfig.yaml")
 
-        logger.info(f"{Path(__file__).name}: Ensuring DB exists...")
+        logger.info(f"{os.path.abspath(__file__)}: Ensuring DB exists...")
 
         ensureDbFiles(self.fileConfig.target,vars(self.fileConfig.filesAndColumns))
 
@@ -89,11 +90,11 @@ class databaseTestDetailsTestReplyHandler:
 
                 if((df["userId"]==newUser)&(df["testId"]==newTest)).any():
 
-                    logger.info(f"{Path(__file__).name}: Duplicate entry to {values[0]} having testId {values[1]} found. Not Registered.")
+                    logger.info(f"{os.path.abspath(__file__)}: Duplicate entry to {values[0]} having testId {values[1]} found. Not Registered.")
 
                     return False
                 
-            logger.info(f"{Path(__file__).name}: no duplicate found for {values[0]} having testId {values[1]}")
+            logger.info(f"{os.path.abspath(__file__)}: no duplicate found for {values[0]} having testId {values[1]}")
     
             df=pd.concat([df,newRow],ignore_index=True)
         else:
@@ -101,7 +102,7 @@ class databaseTestDetailsTestReplyHandler:
 
         df.to_excel(filePath,index=False)
 
-        logger.info(f"{Path(__file__).name}: Test Details {values} Added to table {filePath}")
+        logger.info(f"{os.path.abspath(__file__)}: Test Details {values} Added to table {filePath}")
         return True
 
 
