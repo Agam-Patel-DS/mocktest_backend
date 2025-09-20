@@ -86,7 +86,7 @@ class testRequestHandler:
         else:
             
             # Duplicate entries found
-            logger.info("{os.path.abspath(__file__)found.")
+            logger.info("{os.path.abspath(__file__)} duplicates found.")
             return None
         
     

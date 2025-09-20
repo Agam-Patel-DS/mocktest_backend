@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 
-
 @dataclass
-class databaseSolutionDetailsConfig:
+class solutionDetailsConfig:
     userId:str
     testId:str
     solutions:dict
     timeTaken:int
+    excelPath:str
 
 @dataclass
 class databaseScoreConfig:

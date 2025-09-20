@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from src.replies.testReplyFinal import testByCompaniesReplyFinal,testByDifficultyReplyFinal, testByGenAIReplyFinal
+from src.replies.scoreReplyFinal import scoreReplyFinalForAll
 from src.utils.customException import handle_exceptions
 from src.utils.customLogger import logger
 from pathlib import Path
@@ -63,6 +64,23 @@ def get_questions_genai():
     return jsonify({
         "questionsDict":questionsDict,
         "dbDict":dbDict
+    })
+
+@app.route("/submit",methods=["POST"])
+def submit():
+    data=request.get_json()
+
+    logger.info(f"{os.path.abspath(__file__)}: new request at /submit")
+
+    if not data:
+        return jsonify({"error":"No JSON data recieved"}), 400
+    
+    finalResult=scoreReplyFinalForAll(data)
+
+    logger.info(f"{os.path.abspath(__file__)}: response sent to frontend")
+
+    return jsonify({
+        "result":finalResult
     })
 
 if __name__=="__main__":
