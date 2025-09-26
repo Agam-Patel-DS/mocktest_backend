@@ -17,7 +17,7 @@ class testHandler:
     else:
       questions=self.questionIds
     
-    print(questions)
+    print(f"Questions: {questions}")
     solutions=self.config.solutions
     print(solutions)
     result=evaluate_all(questions, solutions)
@@ -26,7 +26,7 @@ class testHandler:
 
   def returnResult(self):
     result,correctCount=self.testbyAI()
-    finalReply={"result":result, "correctCount":correctCount, "testDetails":self.testDetails}
+    finalReply={"result":result, "correctCount":correctCount, "timeTaken":self.config.timeTaken, "testDetails":self.testDetails}
     return finalReply
 
 
