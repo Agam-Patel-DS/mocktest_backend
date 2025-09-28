@@ -8,6 +8,16 @@ import os
 
 app=Flask(__name__)
 
+
+# Global error handler
+@app.errorhandler(500)
+def handle_500(error):
+    return jsonify({"error": "Internal Server Error"}), 500
+
+@app.errorhandler(400)
+def handle_400(error):
+    return jsonify({"error": "Bad Request"}), 400
+
 @handle_exceptions
 @app.route("/get_questions_dsa",methods=["POST"])
 def get_questions_dsa():
@@ -68,6 +78,10 @@ def get_questions_genai():
 
 @app.route("/submit",methods=["POST"])
 def submit():
+
+    # print("Headers:", request.headers)
+    # print("Raw body:", request.get_data(as_text=True))
+
     data=request.get_json()
 
     logger.info(f"{os.path.abspath(__file__)}: new request at /submit")
@@ -84,4 +98,4 @@ def submit():
     })
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run(debug=False)
