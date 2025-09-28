@@ -26,6 +26,7 @@ class testHandler:
     solutions=self.config.solutions
     logger.info(f"{os.path.abspath(__file__)}: Solutions: {solutions}")
     result=evaluate_all(questions, solutions)
+    logger.info(f"{os.path.abspath(__file__)}: result: {result}")
     correctCount=count_correct_solutions(result)
     return result, correctCount
 

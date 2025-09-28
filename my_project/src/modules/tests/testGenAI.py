@@ -102,4 +102,7 @@ def evaluate_all(questions_dict, solutions_dict):
 
 def count_correct_solutions(results_dict):
     """Count how many solutions are correct in the results dict."""
-    return sum(1 for res in results_dict.values() if res["result"] is True)
+    return sum(
+        1 for res in results_dict.values()
+        if str(res["result"]).lower() == "true"
+    )
