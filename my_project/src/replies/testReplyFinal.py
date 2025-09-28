@@ -5,9 +5,9 @@ from src.modules.testReply.testByGenAI import testByGenAIGeneration
 from src.utils.customException import handle_exceptions
 from src.config.testReplyConfigManager import testReplyConfigurationManager
 from src.modules.database.dbTestReply import databaseQuestionDetailsTestReplyHandler
-from src.utils.customLogger import logger
 from pathlib import Path
 import os
+from src.utils.customLogger import logger
 
 @handle_exceptions
 def testByDifficultyReplyFinal(data:dict):

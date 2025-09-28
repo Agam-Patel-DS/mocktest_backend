@@ -1,26 +1,26 @@
 from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
-import json, re
-import os
+import json, re, os
 from dotenv import load_dotenv
+from src.utils.customLogger import logger
 
 load_dotenv()
 
 groq_api_key = os.getenv("GROQ_API_KEY")
 if groq_api_key:
-    print("GROQ_API_KEY loaded successfully!")
+    logger.info(f"{os.path.abspath(__file__)}: GROQ_API_KEY loaded successfully!")
 else:
-    print("GROQ_API_KEY not found. Make sure it's in your .env file.")
+    logger.info(f"{os.path.abspath(__file__)}: GROQ_API_KEY not found. Make sure it's in your .env file.")
 
-# Initialize Groq LLM
+# ---------------- Groq LLM ----------------
 llm = ChatGroq(
     temperature=0.2,   # lower temperature = more deterministic
     groq_api_key=groq_api_key,
     model="llama-3.1-8b-instant"
 )
 
-# ---------------- Enforcing Schema ----------------
+# ---------------- Schema ----------------
 response_schemas = [
     ResponseSchema(name="result", description="True if solution is correct, else False"),
     ResponseSchema(name="testCase", description="The test case if incorrect, otherwise null"),
@@ -30,7 +30,7 @@ response_schemas = [
 parser = StructuredOutputParser.from_response_schemas(response_schemas)
 format_instructions = parser.get_format_instructions()
 
-# Prompt template for correctness checking
+# ---------------- Prompt ----------------
 prompt = ChatPromptTemplate.from_template(
     """
 You are a DSA evaluator. 
@@ -48,75 +48,58 @@ Proposed Solution:
 
 Return only a JSON object in this exact format:
 {format_instructions}
-""",
-    partial_variables={"format_instructions": format_instructions}
-)
+"""
+).partial(format_instructions=format_instructions)
 
+# ---------------- Utils ----------------
 def extract_json(text: str):
-    """Try to extract a JSON object from raw text."""
+    """Fallback: extract JSON object from raw text if malformed."""
+    text = text.strip()
+    if text.startswith("```"):  # remove code fences
+        text = re.sub(r"^```(json)?", "", text)
+        text = re.sub(r"```$", "", text)
+
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if match:
         try:
-            return json.loads(match.group())
-        except Exception:
-            return None
-    return None
+            cleaned = re.sub(r",\s*}", "}", match.group())
+            cleaned = re.sub(r",\s*]", "]", cleaned)
+            return json.loads(cleaned)
+        except Exception as e:
+            return {"result": False, "testCase": None, "explanation": f"Bad JSON parse: {e}\nRaw: {text}"}
+    return {"result": False, "testCase": None, "explanation": f"No JSON found. Raw: {text}"}
 
 def evaluate_solution(qid, question, solution):
     """Evaluate a single solution against its question."""
     chain = prompt | llm
     response = chain.invoke({"qid": qid, "question": question, "solution": solution})
-    
-    # First attempt: strict parser
     try:
         return parser.parse(response.content)
     except Exception as e:
-        # Second attempt: regex salvage
-        parsed = extract_json(response.content)
-        if parsed:
-            return parsed
-        # Final fallback: structured error
-        return {"result": False, "testCase": None, "explanation": f"Invalid JSON response: {str(e)}"}
+        logger.warning(f"Parser failed, falling back: {e}")
+        return extract_json(response.content)
 
 def evaluate_all(questions_dict, solutions_dict):
     """Evaluate all solutions and return final dictionary."""
     results = {}
-    print(f"evaluate_all func called for \n questions: {questions_dict}\n solutions: {solutions_dict}")
+    logger.info(f"{os.path.abspath(__file__)}: evaluate_all func called for \n questions: {questions_dict}\n solutions: {solutions_dict}")
     for qid, question in questions_dict.items():
-        print(f"qid: {qid}\n question: {question}")
+        logger.info(f"{os.path.abspath(__file__)}: qid: {qid}\n question: {question}")
         sol = solutions_dict.get(qid)
         if sol is None:
             try:
                 sol = solutions_dict.get(int(qid))
             except ValueError:
                 pass
-        print(f"sol:{sol}")
+        logger.info(f"{os.path.abspath(__file__)}: sol:{sol}")
         if sol is None:
             results[qid] = {"result": False, "testCase": None, "explanation": "No solution provided"}
-            print(results[qid])
+            logger.info(f"{os.path.abspath(__file__)}: {results[qid]}")
         else:
             results[qid] = evaluate_solution(qid, question, sol)
-            print(results[qid])
+            logger.info(f"{os.path.abspath(__file__)}: {results[qid]}")
     return results
 
 def count_correct_solutions(results_dict):
     """Count how many solutions are correct in the results dict."""
     return sum(1 for res in results_dict.values() if res["result"] is True)
-
-
-# # ---------------- Example ----------------
-# questions = {
-#     "q1": "Given an array, find the maximum subarray sum using Kadane's Algorithm.",
-#     "q2": "Check if a string is palindrome."
-# }
-
-# solutions = {
-#     "q1": "def maxSubArray(nums): return max(nums)",  # wrong
-#     "q2": "def isPalindrome(s): return s == s[::-1]"  # correct
-# }
-
-# final_results = evaluate_all(questions, solutions)
-# print(final_results)   # dictionary output
-
-# correct_count = count_correct_solutions(final_results)
-# print("Correct Solutions:", correct_count)

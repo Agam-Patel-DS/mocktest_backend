@@ -3,14 +3,16 @@ from src.entity.scoreReplyConfigs import solutionDetailsConfig
 from src.modules.sidereq.retrieveQuestions import get_questions_from_excel
 from src.modules.tests.testGenAI import evaluate_all, count_correct_solutions
 from src.modules.database.dbDetails import generalRetrieval
+from src.utils.customLogger import logger
+
 
 class testHandler:
   def __init__(self,config:solutionDetailsConfig):
     self.config=config
-    print(f"userId: {self.config.userId}, testId: {self.config.testId}")
+    logger.info(f"{os.path.abspath(__file__)}: userId: {self.config.userId}, testId: {self.config.testId}")
     self.dbret=generalRetrieval(self.config.userId, self.config.testId)
     self.testDetails=self.dbret.get_test_details()
-    print(f"testDetails: {self.testDetails}")
+    logger.info(f"{os.path.abspath(__file__)}: testDetails: {self.testDetails}")
     self.questionIds=self.dbret.retrieveQuestionIdsGeneral()
 
   def testbyAI(self):
@@ -20,9 +22,9 @@ class testHandler:
     else:
       questions=self.questionIds
     
-    print(f"Questions: {questions}")
+    logger.info(f"{os.path.abspath(__file__)}: Questions: {questions}")
     solutions=self.config.solutions
-    print(solutions)
+    logger.info(f"{os.path.abspath(__file__)}: Solutions: {solutions}")
     result=evaluate_all(questions, solutions)
     correctCount=count_correct_solutions(result)
     return result, correctCount

@@ -10,7 +10,7 @@ class scoreReplyConfigurationManager:
         # This class returns all the configurations required for scoreReply Module
 
         self.data=data
-        # logger.info(f"{os.path.abspath(__file__)}: running scoreReplyConfigurationManager")
+        logger.info(f"{os.path.abspath(__file__)}: running scoreReplyConfigurationManager")
     
     def solutionDetailsConfigurationManager(self):
       config=solutionDetailsConfig(
@@ -20,4 +20,5 @@ class scoreReplyConfigurationManager:
           timeTaken=self.data["timeTaken"],
           excelPath="data/questions.xlsx"
       )
+      logger.info(f"{os.path.abspath(__file__)}: returning solutionDetailsConfig")
       return config
