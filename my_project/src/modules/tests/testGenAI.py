@@ -61,23 +61,60 @@ def extract_json(text: str):
 
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if match:
+        cleaned = match.group()
+
+        # Fix common issues:
+        # 1. Add missing commas between fields like: "False" "testCase"
+        cleaned = re.sub(r'"\s+"', '", "', cleaned)
+
+        # 2. Remove trailing commas before } or ]
+        cleaned = re.sub(r",\s*}", "}", cleaned)
+        cleaned = re.sub(r",\s*]", "]", cleaned)
+
         try:
-            cleaned = re.sub(r",\s*}", "}", match.group())
-            cleaned = re.sub(r",\s*]", "]", cleaned)
-            return json.loads(cleaned)
+            data = json.loads(cleaned)
+
+            # Normalize booleans
+            if isinstance(data.get("result"), str):
+                if data["result"].lower() == "true":
+                    data["result"] = True
+                elif data["result"].lower() == "false":
+                    data["result"] = False
+
+            return data
         except Exception as e:
-            return {"result": False, "testCase": None, "explanation": f"Bad JSON parse: {e}\nRaw: {text}"}
-    return {"result": False, "testCase": None, "explanation": f"No JSON found. Raw: {text}"}
+            return {
+                "result": False,
+                "testCase": None,
+                "explanation": f"Bad JSON parse: {e}\nRaw: {text}"
+            }
+
+    return {
+        "result": False,
+        "testCase": None,
+        "explanation": f"No JSON found. Raw: {text}"
+    }
+
 
 def evaluate_solution(qid, question, solution):
     """Evaluate a single solution against its question."""
     chain = prompt | llm
     response = chain.invoke({"qid": qid, "question": question, "solution": solution})
     try:
-        return parser.parse(response.content)
+        res = parser.parse(response.content)
     except Exception as e:
         logger.warning(f"Parser failed, falling back: {e}")
-        return extract_json(response.content)
+        res = extract_json(response.content)
+
+    # normalize boolean values
+    if isinstance(res.get("result"), str):
+        if res["result"].lower() == "true":
+            res["result"] = True
+        elif res["result"].lower() == "false":
+            res["result"] = False
+
+    return res
+
 
 def evaluate_all(questions_dict, solutions_dict):
     """Evaluate all solutions and return final dictionary."""

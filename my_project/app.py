@@ -33,6 +33,11 @@ def get_questions_dsa():
     
     logger.info(f"{os.path.abspath(__file__)}: response sent to frontend")
 
+    if not questionsDict or not dbDict:
+      return jsonify({
+          "message": "Not able to generate the test at the moment"
+      })
+
     return jsonify({
         "questionsDict":questionsDict,
         "dbDict":dbDict
@@ -52,6 +57,11 @@ def get_questions_companies():
 
     logger.info(f"{os.path.abspath(__file__)}: response sent to frontend")
 
+    if not questionsDict or not dbDict:
+      return jsonify({
+          "message": "Not able to generate the test at the moment"
+      })
+
     return jsonify({
         "questionsDict":questionsDict,
         "dbDict":dbDict
@@ -70,6 +80,11 @@ def get_questions_genai():
     questionsDict,dbDict=testByGenAIReplyFinal(data)
 
     logger.info(f"{os.path.abspath(__file__)}: response sent to frontend")
+
+    if not questionsDict or not dbDict:
+      return jsonify({
+          "message": "Not able to generate the test at the moment"
+      })
 
     return jsonify({
         "questionsDict":questionsDict,
@@ -92,6 +107,11 @@ def submit():
     finalResult=scoreReplyFinalForAll(data)
 
     logger.info(f"{os.path.abspath(__file__)}: response sent to frontend")
+
+    if not finalResult:
+      return jsonify({
+          "message": "Not able to generate the evaluation at the moment"
+      })
 
     return jsonify({
         "result":finalResult
